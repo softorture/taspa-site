@@ -1,0 +1,122 @@
+/* Taspa brand tokens v01, approved 21.10.2026. Source of truth: studio/brand/BRAND.md
+   Fonts (Google Fonts):
+   https://fonts.googleapis.com/css2?family=Onest:wght@400;600;800&family=Literata:ital,opsz,wght@0,7..72,400;1,7..72,400&family=JetBrains+Mono&display=swap
+   Three site modes on <html data-mode="white|black|blue">. White = no attribute.
+   Use data-mode, not data-theme: the Artifact viewer writes data-theme on the root itself.
+   Components use only the semantic tokens (--bg, --fg ...), never the brand constants. */
+
+:root {
+  /* brand constants */
+  --taspa-ink: #121316;
+  --taspa-paper: #ffffff;
+  --taspa-blue: #2f3bf5;
+
+  /* semantic tokens, white mode (default) */
+  color-scheme: light;
+  --bg: #ffffff;
+  --fg: #121316;
+  --fg-soft: #5e5f62;        /* ink 62% */
+  --rule: #e2e2e3;           /* ink 12% */
+  --panel: #f5f5f6;          /* ink 4% */
+  --tint: #eaebfe;           /* blue 10% */
+  --cta-bg: #2f3bf5;         /* primary button */
+  --cta-fg: #ffffff;
+  --mark: #2f3bf5;           /* logo dot, active dots, focus ring, REC */
+  --link: #2f3bf5;
+  --logo-fg: #121316;        /* logo letters */
+  --logo-dot: #2f3bf5;
+
+  /* type */
+  --f-text: "Onest", "Helvetica Neue", Arial, sans-serif;
+  --f-display: "Literata", Georgia, "Times New Roman", serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+
+  --t-hero: clamp(2.375rem, 1.6rem + 3.3vw, 4rem);      /* 38 to 64 px, Onest 600 */
+  --t-h2: clamp(2.125rem, 1.6rem + 2.2vw, 3.25rem);     /* 34 to 52 px, Literata 400 */
+  --t-num: clamp(3.5rem, 2.4rem + 4.6vw, 6rem);         /* 56 to 96 px, Literata 400 */
+  --t-h3: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);       /* 20 to 24 px, Onest 600 */
+  --t-body: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);    /* 16 to 18 px */
+  --t-btn: 0.9375rem;                                   /* 15 px */
+  --t-label: 0.75rem;                                   /* 12 px mono caps */
+
+  --lh-tight: 1.05;
+  --lh-body: 1.55;
+  --tr-hero: -0.03em;
+  --tr-h2: -0.02em;
+  --tr-label: 0.06em;
+  --measure: 65ch;
+
+  /* shape */
+  --r-pill: 999px;
+  --r-card: 20px;
+  --r-media: 16px;
+  --btn-h: 48px;
+
+  /* motion */
+  --ease: cubic-bezier(.4, 0, .2, 1);
+  --ease-out: cubic-bezier(.17, .84, .44, 1);
+  --ease-spring: cubic-bezier(.34, 1.56, .64, 1);
+  --d-hover: 150ms;
+  --d-ui: 300ms;
+  --d-reveal: 500ms;
+  --d-long: 900ms;
+  --stagger: 60ms;
+  --reveal-shift: 24px;
+}
+
+/* black mode */
+:root[data-mode="black"] {
+  color-scheme: dark;
+  --bg: #121316;
+  --fg: #ffffff;
+  --fg-soft: #a5a5a6;        /* white 62%, 7.5:1 */
+  --rule: #38393b;
+  --panel: #202124;
+  --tint: #181c47;
+  --cta-bg: #2f3bf5;
+  --cta-fg: #ffffff;
+  --mark: #2f3bf5;
+  --link: #8a91ff;           /* blue as text is too dark on ink (2.7:1), this is 6.7:1 */
+  --logo-fg: #ffffff;
+  --logo-dot: #2f3bf5;
+}
+
+/* blue mode */
+:root[data-mode="blue"] {
+  color-scheme: dark;
+  --bg: #2f3bf5;
+  --fg: #ffffff;             /* 6.9:1 */
+  --fg-soft: #d5d8fd;        /* white 80%, 4.9:1 */
+  --rule: #616af7;
+  --panel: #444ff6;
+  --tint: #444ff6;
+  --cta-bg: #ffffff;
+  --cta-fg: #121316;
+  --mark: #ffffff;
+  --link: #ffffff;           /* underlined inside running text only */
+  --logo-fg: #ffffff;
+  --logo-dot: #ffffff;       /* logo fully white on blue */
+}
+
+body {
+  background: var(--bg); color: var(--fg); font-family: var(--f-text);
+  transition: background-color var(--d-ui) var(--ease), color var(--d-ui) var(--ease);
+}
+:root[data-mode="blue"] :is(p, li, dd, td, figcaption) a { text-decoration: underline; }  /* nav and buttons stay clean */
+
+/* reveal: the script adds .js to <html>, so without JS everything is visible */
+.js [data-reveal] { opacity: 0; transform: translateY(var(--reveal-shift)); }
+.js [data-reveal].is-in {
+  opacity: 1; transform: none;
+  transition: opacity var(--d-reveal) var(--ease-out), transform var(--d-reveal) var(--ease-out);
+  transition-delay: calc(var(--i, 0) * var(--stagger));
+}
+
+/* REC dot of the V1 wordmark, only in live places */
+@keyframes taspa-rec { 0%, 83% { opacity: 1; } 84%, 100% { opacity: 0; } }
+.rec-live { animation: taspa-rec 1.2s steps(1, end) infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  .js [data-reveal] { opacity: 1; transform: none; }
+}
