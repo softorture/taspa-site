@@ -15,11 +15,11 @@
                   req: "Request from taspa site", need: "Need", budget: "Budget", time: "Timing", name: "Name", brand: "Brand",
                   site: "Website", contact: "Email", reqSubj: "Request", newBrand: "new brand" } },
     ru: { play: "Смотреть", pause: "Пауза", view: "Открыть", soundOn: "Со звуком", soundOff: "Без звука",
-          form: "Должна открыться почта с заявкой. Удобнее Telegram? Текст скопирован, вставьте его в чат", perVideo: "за ролик",
-          pack3: "Это наш UGC Video Pack: 3 ролика, 3 хука.", pack10: "Это наш UGC Pack 10: 10 роликов, 2 креатора, 5 хуков.",
-          next: "Дальше", finish: "Завершить заявку", theme: "Тема", switchTo: "Переключить на",
+          form: "Сейчас откроется почта с готовым письмом. Удобнее в Telegram? Текст уже скопирован, вставьте его в чат", perVideo: "за ролик",
+          pack3: "Это наш UGC-пак 3: 3 ролика, 3 хука.", pack10: "Это наш UGC-пак 10: 10 роликов, 2 креатора, 5 хуков.",
+          next: "Дальше", finish: "Завершить заявку", theme: "Тема", switchTo: "Следующая:",
           modes: { white: "Светлая", black: "Тёмная", blue: "Синяя" }, openMenu: "Открыть меню", closeMenu: "Закрыть меню",
-          mail: { sample: "Хочу бесплатный хук.", product: "Товар", where: "Где реклама", reply: "Ответить", sampleSubj: "Бесплатный хук",
+          mail: { sample: "Хочу бесплатный хук.", product: "Товар", where: "Где реклама", reply: "Куда ответить", sampleSubj: "Бесплатный хук",
                   req: "Заявка с сайта Taspa", need: "Нужно", budget: "Бюджет", time: "Сроки", name: "Имя", brand: "Бренд",
                   site: "Сайт", contact: "Контакт", reqSubj: "Заявка", newBrand: "новый бренд" } }
   }[lang];
@@ -421,13 +421,20 @@
     var usd = function (n) { return n == null ? "" : ' <span class="usd">$' + n.toLocaleString("en-US").replace(/,/g, "\u00a0") + "</span>"; };
     var out = {
       count: $(".count", box), per: $('[data-out="per"]', box), total: $('[data-out="total"]', box),
-      hint: $(".pack-hint", box), tiers: $$(".tiers li", box)
+      hint: $(".pack-hint", box), tiers: $$(".tiers li", box), unit: $(".count-unit", box)
+    };
+    // optional plural forms for the unit label: data-forms="one|few|many" (RU)
+    var forms = out.unit && out.unit.dataset.forms ? out.unit.dataset.forms.split("|") : null;
+    var plural = function (n) {
+      var a = n % 10, b = n % 100;
+      return forms[a === 1 && b !== 11 ? 0 : a >= 2 && a <= 4 && (b < 12 || b > 14) ? 1 : 2];
     };
     var update = function () {
       var n = parseInt(slider.value, 10), idx = 0;
       tiers.forEach(function (t, i) { if (n >= t[0]) idx = i; });
       var per = tiers[idx][1], perUsd = tiers[idx][2];
       out.count.textContent = n;
+      if (forms) out.unit.textContent = plural(n);
       out.per.innerHTML = fmt(per) + usd(perUsd);
       out.total.innerHTML = fmt(per * n) + usd(perUsd == null ? null : perUsd * n);
       out.tiers.forEach(function (li, i) { li.classList.toggle("on", i === idx); });
