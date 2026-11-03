@@ -626,3 +626,11 @@ fieldset.field { border: 0; padding: 0; margin: 0; }
   .js .split .w > span { transform: none; }
   .cursor { display: none; }
 }
+
+/* v4 RU: short label for the first hero button up to 480 px; dollars next to tenge */
+.lbl-short { display: none; }
+@media (max-width: 480px) { .lbl-long { display: none; } .lbl-short { display: inline; } }
+.usd { font-family: var(--f-mono); font-size: max(.72rem, .5em); font-weight: 400; letter-spacing: 0; color: var(--fg-soft); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.tiers .usd, .totals .usd, .addon .usd { display: block; }
+.totals .usd { margin-top: .25rem; }
+.pack .price .usd { margin-left: .2em; }
