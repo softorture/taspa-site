@@ -414,7 +414,7 @@
     var tiers = JSON.parse(box.dataset.tiers);   // [[minCount, pricePerVideo], ...] ascending
     var currency = box.dataset.currency;
     var fmt = function (n) {
-      if (currency === "KZT") return n.toLocaleString("ru-RU").replace(/\s/g, " ") + " ₸";
+      if (currency === "KZT") return n.toLocaleString("ru-RU").replace(/\s/g, "\u00a0") + "\u00a0₸";
       return "$" + n.toLocaleString("en-US");
     };
     // optional third value in a tier: the same price in dollars, shown next to tenge (RU)
