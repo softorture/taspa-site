@@ -442,6 +442,41 @@
     </div>
   </section>
 
+  <section class="section" id="look" aria-labelledby="look-title">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <span class="label">[ГАРДЕРОБ]</span>
+        <h2 class="h2" id="look-title">Примерьте образ.</h2>
+        <p>Выберите креатора и переключайте образы. За шаг меняется одна вещь, лицо остаётся тем же. Так мы одеваем наш кастинг в вашу одежду.</p>
+      </div>
+      <div class="ttl-grid" data-ttl>
+        <div class="ttl-stage" role="group" aria-roledescription="carousel" aria-label="Креаторы в демо-капсуле">
+          <div class="ttl-figs">
+            <div class="ttl-fig" data-model="maya" data-name="Maya"><img src="../assets/look/maya_0.webp" alt="AI-креатор Maya: пиджак цвета кэмел, белая футболка, коричневые брюки, лоферы и сумка-полумесяц коньячного цвета" width="760" height="1362" decoding="async"></div>
+            <div class="ttl-fig" data-model="vera" data-name="Vera"><img src="../assets/look/vera_0.webp" alt="AI-креатор Vera: бежевый тренч поверх свитера с косами, светлые джинсы и белые кеды" width="760" height="1362" decoding="async"></div>
+            <div class="ttl-fig" data-model="leo" data-name="Leo"><img src="../assets/look/leo_0.webp" alt="AI-креатор Leo: свитер с косами, коричневые брюки и лоферы" width="760" height="1362" decoding="async"></div>
+          </div>
+          <div class="ttl-nav">
+            <button class="ttl-arrow" type="button" data-step="-1" aria-label="Предыдущий креатор">&larr;</button>
+            <button class="ttl-arrow" type="button" data-step="1" aria-label="Следующий креатор">&rarr;</button>
+          </div>
+        </div>
+        <div class="ttl-panel">
+          <div class="ttl-who"><b>Maya</b><span>Образ 01 / 05</span></div>
+          <div class="ttl-looks" role="group" aria-label="Образы креатора"></div>
+          <h3 class="label ttl-in">В этом образе</h3>
+          <ul class="ttl-items"></ul>
+          <div class="ttl-cta">
+            <button class="btn btn-primary" type="button" data-open-wizard>Примерить мою одежду</button>
+            <button class="ttl-seen" type="button" hidden></button>
+          </div>
+          <p class="ttl-note">AI-креаторы. Демо-капсула, без реальных брендов.</p>
+          <p class="ttl-live" aria-live="polite"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="section" id="process" aria-labelledby="process-title">
     <div class="wrap">
       <div class="section-head" data-reveal>
@@ -769,5 +804,6 @@
 </div>
 
 <script src="../js/main.js"></script>
+<script src="../js/look.js"></script>
 </body>
 </html>

@@ -634,3 +634,114 @@ fieldset.field { border: 0; padding: 0; margin: 0; }
 .tiers .usd, .totals .usd, .addon .usd { display: block; }
 .totals .usd { margin-top: .25rem; }
 .pack .price .usd { margin-left: .2em; }
+
+/* v4.1 try the look: our cast in the demo capsule, one piece per step (js/look.js).
+   The stage is a white studio in every site mode; without the script the three base looks stand in a row. */
+.ttl-grid { display: grid; gap: 1.25rem; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 960px) { .ttl-grid { grid-template-columns: minmax(0, 1fr) 340px; gap: 2rem; align-items: start; } }
+.ttl-stage {
+  --bg: #ffffff; --fg: #121316; --fg-soft: #5e5f62; --rule: #e2e2e3; --mark: #2f3bf5;
+  position: relative; background: #ffffff; color: var(--fg); border-radius: var(--r-card); overflow: hidden;
+  aspect-ratio: 4 / 5; -webkit-user-select: none; user-select: none;
+}
+@media (min-width: 640px) { .ttl-stage { aspect-ratio: 16 / 11; } }
+:root[data-mode="black"] .ttl-stage, :root[data-mode="blue"] .ttl-stage { box-shadow: 0 0 0 1px rgba(255, 255, 255, .1); }
+.ttl-figs { position: absolute; inset: 0; display: flex; justify-content: center; align-items: flex-end; gap: 2%; padding: 3% 4% 0; }
+.ttl-fig { position: relative; height: 94%; aspect-ratio: 760 / 1362; flex: none; }
+.ttl-fig img { display: block; width: 100%; height: 100%; object-fit: contain; -webkit-user-drag: none; }
+.ttl-fig img + img { display: none; }
+.ttl-nav, .ttl-panel { display: none; }
+
+.ttl-grid.is-live .ttl-stage { touch-action: pan-y; }
+.ttl-grid.is-live .ttl-figs { display: block; padding: 0; }
+.ttl-grid.is-live .ttl-fig {
+  position: absolute; left: 0; bottom: 2%; transform-origin: 50% 100%; cursor: pointer; will-change: transform;
+  transition: transform 620ms var(--ease-out), opacity 420ms var(--ease);
+}
+.ttl-grid.is-live .ttl-fig.is-active { cursor: default; }
+.ttl-grid.is-live .ttl-fig.is-moving { filter: url(#ttl-mblur); }
+.ttl-grid.is-live .ttl-fig img { display: block; position: absolute; inset: 0; opacity: 0; pointer-events: none; transition: opacity 380ms var(--ease); }
+.ttl-grid.is-live .ttl-fig img.on { opacity: 1; }
+
+.ttl-dots { position: absolute; inset: 0; }
+.ttl-dot {
+  position: absolute; width: 30px; height: 30px; margin: -15px 0 0 -15px; padding: 0; border: 0; background: transparent; cursor: pointer;
+  opacity: 0; transform: scale(.5); transition: opacity 260ms var(--ease), transform 320ms var(--ease-spring);
+}
+.ttl-fig.is-active .ttl-dot { opacity: 1; transform: none; transition-delay: calc(260ms + var(--i, 0) * 60ms); }
+.ttl-dot::before {
+  content: ""; position: absolute; inset: 8px; border-radius: 50%; background: #ffffff;
+  box-shadow: 0 0 0 2px var(--taspa-blue), 0 2px 10px rgba(18, 19, 22, .28);
+}
+.ttl-dot.is-new::after {
+  content: ""; position: absolute; inset: 8px; border-radius: 50%; box-shadow: 0 0 0 2px var(--taspa-blue);
+  animation: ttl-ping 1.6s var(--ease-out) infinite;
+}
+@keyframes ttl-ping { 0% { transform: scale(1); opacity: .9; } 100% { transform: scale(2.6); opacity: 0; } }
+.ttl-dot.is-hot::before { background: var(--taspa-blue); box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px var(--taspa-blue); }
+.ttl-dot span {
+  position: absolute; left: 50%; bottom: calc(100% + 2px); transform: translateX(-50%); white-space: nowrap; pointer-events: none;
+  background: var(--taspa-ink); color: #ffffff; font-size: .8rem; line-height: 1.2; padding: .3rem .6rem; border-radius: var(--r-pill);
+  opacity: 0; transition: opacity var(--d-hover) var(--ease);
+}
+.ttl-dot:hover span, .ttl-dot:focus-visible span, .ttl-dot.is-hot span { opacity: 1; }
+
+.ttl-grid.is-live .ttl-nav { display: flex; position: absolute; inset: auto 0 0 0; justify-content: space-between; padding: .9rem; pointer-events: none; z-index: 5; }
+.ttl-arrow {
+  pointer-events: auto; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--rule); background: rgba(255, 255, 255, .92);
+  color: var(--fg); font-size: 1.05rem; line-height: 1; cursor: pointer;
+  transition: transform var(--d-ui) var(--ease-spring), border-color var(--d-hover) var(--ease);
+}
+.ttl-arrow:hover { border-color: var(--fg-soft); transform: scale(1.06); }
+.ttl-arrow:active { transform: scale(.94); }
+
+.ttl-grid.is-live .ttl-panel { display: grid; gap: .9rem; align-content: start; min-width: 0; }
+.ttl-who { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; padding-bottom: .7rem; border-bottom: 1px solid var(--rule); }
+.ttl-who b { font-family: var(--f-display); font-weight: 400; font-size: clamp(2rem, 1.7rem + 1vw, 2.5rem); line-height: 1; letter-spacing: var(--tr-h2); }
+.ttl-who span { font-family: var(--f-mono); font-size: var(--t-label); letter-spacing: .05em; text-transform: uppercase; color: var(--fg-soft); white-space: nowrap; }
+.ttl-looks { display: flex; flex-wrap: wrap; gap: .4rem; }
+.ttl-look {
+  display: inline-flex; align-items: baseline; gap: .45em; border: 1px solid var(--rule); background: transparent; color: var(--fg);
+  border-radius: var(--r-pill); padding: .4rem .85rem; font-size: .9rem; cursor: pointer;
+  transition: background-color var(--d-hover) var(--ease), border-color var(--d-hover) var(--ease), color var(--d-hover) var(--ease);
+}
+.ttl-look i { font-style: normal; font-family: var(--f-mono); font-size: var(--t-label); color: var(--fg-soft); }
+.ttl-look:hover { border-color: var(--fg-soft); }
+.ttl-look[aria-pressed="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.ttl-look[aria-pressed="true"] i { color: inherit; opacity: .7; }
+.ttl-in { margin-top: .3rem; }
+.ttl-items { list-style: none; margin: 0; padding: 0; display: grid; gap: .5rem; }
+.ttl-item {
+  display: grid; grid-template-columns: 52px minmax(0, 1fr) auto; gap: .85rem; align-items: center; padding: .3rem .7rem .3rem .3rem;
+  border: 1px solid var(--rule); border-radius: 14px; transition: border-color var(--d-hover) var(--ease), background-color var(--d-hover) var(--ease);
+}
+.ttl-item img { width: 52px; height: 52px; border-radius: 10px; background: #ffffff; object-fit: contain; }
+.ttl-item span { font-size: .95rem; line-height: 1.3; }
+.ttl-item em {
+  font-style: normal; font-family: var(--f-mono); font-size: var(--t-label); letter-spacing: .05em; text-transform: uppercase;
+  background: var(--cta-bg); color: var(--cta-fg); border-radius: var(--r-pill); padding: .2rem .55rem;
+}
+.ttl-item.is-new { animation: ttl-in 420ms var(--ease-out); }
+.ttl-item.is-hot { border-color: var(--mark); background: var(--tint); }
+@keyframes ttl-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.ttl-cta { display: flex; flex-wrap: wrap; align-items: center; gap: .7rem 1.2rem; margin-top: .4rem; }
+.ttl-seen {
+  border: 0; background: none; padding: .2rem 0; color: var(--link); font: inherit; font-weight: 600; cursor: pointer;
+  text-decoration: underline; text-underline-offset: 3px;
+}
+.ttl-seen::before { content: "\25B6\FE0E"; font-size: .7em; margin-right: .45em; text-decoration: none; display: inline-block; }
+.ttl-note { font-family: var(--f-mono); font-size: var(--t-label); color: var(--fg-soft); letter-spacing: .03em; }
+.ttl-live { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+
+/* phones and tablets: looks and pieces scroll sideways under the stage */
+@media (max-width: 959px) {
+  .ttl-looks { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin-inline: -2px; padding: 2px; }
+  .ttl-looks::-webkit-scrollbar { display: none; }
+  .ttl-look { flex: none; }
+  .ttl-items { grid-auto-flow: column; grid-auto-columns: minmax(132px, 150px); overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: .3rem; scrollbar-width: thin; }
+  .ttl-item { grid-template-columns: 1fr; grid-template-rows: auto auto; gap: .45rem; padding: .45rem; align-content: start; scroll-snap-align: start; position: relative; }
+  .ttl-item img { width: 100%; height: auto; aspect-ratio: 1; }
+  .ttl-item span { font-size: .85rem; }
+  .ttl-item em { position: absolute; top: .7rem; left: .7rem; }
+}
+@media (max-width: 639px) { .ttl-arrow { width: 40px; height: 40px; } .ttl-nav { padding: .6rem; } }
