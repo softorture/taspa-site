@@ -10,12 +10,18 @@
           form: "Your email app should open with the request. Prefer Telegram? The text is copied, paste it to", perVideo: "per video",
           pack3: "This is our UGC Video Pack: 3 videos, 3 hooks.", pack10: "This is our UGC Pack 10: 10 videos, 2 creators, 5 hooks.",
           next: "Next", finish: "Finish request", theme: "Theme", switchTo: "Switch to",
-          modes: { white: "Light", black: "Dark", blue: "Blue" }, openMenu: "Open menu", closeMenu: "Close menu" },
+          modes: { white: "Light", black: "Dark", blue: "Blue" }, openMenu: "Open menu", closeMenu: "Close menu",
+          mail: { sample: "I'd like a free hook.", product: "Product", where: "Where it runs", reply: "Reply to", sampleSubj: "Free hook request",
+                  req: "Request from taspa site", need: "Need", budget: "Budget", time: "Timing", name: "Name", brand: "Brand",
+                  site: "Website", contact: "Email", reqSubj: "Request", newBrand: "new brand" } },
     ru: { play: "Смотреть", pause: "Пауза", view: "Открыть", soundOn: "Со звуком", soundOff: "Без звука",
-          form: "Должна открыться почта с заявкой. Удобнее Telegram? Текст скопирован, вставьте его в чат", perVideo: "за ролик",
-          pack3: "Это наш UGC Video Pack: 3 ролика, 3 хука.", pack10: "Это наш UGC Pack 10: 10 роликов, 2 креатора, 5 хуков.",
-          next: "Дальше", finish: "Завершить заявку", theme: "Тема", switchTo: "Переключить на",
-          modes: { white: "Светлая", black: "Тёмная", blue: "Синяя" }, openMenu: "Открыть меню", closeMenu: "Закрыть меню" }
+          form: "Сейчас откроется почта с готовым письмом. Удобнее в Telegram? Текст уже скопирован, вставьте его в чат", perVideo: "за ролик",
+          pack3: "Это наш UGC-пак 3: 3 ролика, 3 хука.", pack10: "Это наш UGC-пак 10: 10 роликов, 2 креатора, 5 хуков.",
+          next: "Дальше", finish: "Завершить заявку", theme: "Тема", switchTo: "Следующая:",
+          modes: { white: "Светлая", black: "Тёмная", blue: "Синяя" }, openMenu: "Открыть меню", closeMenu: "Закрыть меню",
+          mail: { sample: "Хочу бесплатный хук.", product: "Товар", where: "Где реклама", reply: "Куда ответить", sampleSubj: "Бесплатный хук",
+                  req: "Заявка с сайта Taspa", need: "Нужно", budget: "Бюджет", time: "Сроки", name: "Имя", brand: "Бренд",
+                  site: "Сайт", contact: "Контакт", reqSubj: "Заявка", newBrand: "новый бренд" } }
   }[lang];
   var mq = function (q) { return window.matchMedia ? window.matchMedia(q) : { matches: false, addEventListener: function () {} }; };
   var reduce = mq("(prefers-reduced-motion: reduce)").matches;
@@ -408,20 +414,29 @@
     var tiers = JSON.parse(box.dataset.tiers);   // [[minCount, pricePerVideo], ...] ascending
     var currency = box.dataset.currency;
     var fmt = function (n) {
-      if (currency === "KZT") return n.toLocaleString("ru-RU").replace(/\s/g, " ") + " ₸";
+      if (currency === "KZT") return n.toLocaleString("ru-RU").replace(/\s/g, "\u00a0") + "\u00a0₸";
       return "$" + n.toLocaleString("en-US");
     };
+    // optional third value in a tier: the same price in dollars, shown next to tenge (RU)
+    var usd = function (n) { return n == null ? "" : ' <span class="usd">$' + n.toLocaleString("en-US").replace(/,/g, "\u00a0") + "</span>"; };
     var out = {
       count: $(".count", box), per: $('[data-out="per"]', box), total: $('[data-out="total"]', box),
-      hint: $(".pack-hint", box), tiers: $$(".tiers li", box)
+      hint: $(".pack-hint", box), tiers: $$(".tiers li", box), unit: $(".count-unit", box)
+    };
+    // optional plural forms for the unit label: data-forms="one|few|many" (RU)
+    var forms = out.unit && out.unit.dataset.forms ? out.unit.dataset.forms.split("|") : null;
+    var plural = function (n) {
+      var a = n % 10, b = n % 100;
+      return forms[a === 1 && b !== 11 ? 0 : a >= 2 && a <= 4 && (b < 12 || b > 14) ? 1 : 2];
     };
     var update = function () {
       var n = parseInt(slider.value, 10), idx = 0;
       tiers.forEach(function (t, i) { if (n >= t[0]) idx = i; });
-      var per = tiers[idx][1];
+      var per = tiers[idx][1], perUsd = tiers[idx][2];
       out.count.textContent = n;
-      out.per.textContent = fmt(per);
-      out.total.textContent = fmt(per * n);
+      if (forms) out.unit.textContent = plural(n);
+      out.per.innerHTML = fmt(per) + usd(perUsd);
+      out.total.innerHTML = fmt(per * n) + usd(perUsd == null ? null : perUsd * n);
       out.tiers.forEach(function (li, i) { li.classList.toggle("on", i === idx); });
       out.hint.textContent = n === 3 ? T.pack3 : n === 10 ? T.pack10 : "";
       slider.setAttribute("aria-valuetext", n + ", " + fmt(per) + " " + T.perVideo);
@@ -440,8 +455,9 @@
   $$("form[data-draft]").forEach(function (f) {
     f.addEventListener("submit", function (e) {
       e.preventDefault();
-      var body = (lang === "ru" ? "Хочу бесплатный хук.\n" : "I'd like a free hook.\n") +
-        "Product: " + (fieldVal(f, "product") || "-") + "\nWhere it runs: " + (fieldVal(f, "platform") || "-") + "\nReply to: " + (fieldVal(f, "email") || "-");
+      var M = T.mail;
+      var body = M.sample + "\n" +
+        M.product + ": " + (fieldVal(f, "product") || "-") + "\n" + M.where + ": " + (fieldVal(f, "platform") || "-") + "\n" + M.reply + ": " + (fieldVal(f, "email") || "-");
       var s = $(".form-status", f);
       s.innerHTML = "";
       s.appendChild(document.createTextNode(T.form + " "));
@@ -449,7 +465,7 @@
       s.appendChild(a);
       s.classList.add("on");
       copyText(body);
-      window.location.href = mailto(lang === "ru" ? "Бесплатный хук" : "Free hook request", body);
+      window.location.href = mailto(M.sampleSubj, body);
     });
   });
 
@@ -524,12 +540,13 @@
       var f = $("form", wiz), pick = function (n) {
         return $$('input[name="' + n + '"]:checked', f).map(function (i) { return i.parentNode.textContent.trim(); }).join(", ") || "-";
       };
-      return "Request from taspa site\nNeed: " + pick("need") + "\nBudget: " + pick("budget") + "\nTiming: " + pick("time") +
-        "\nName: " + (fieldVal(f, "name") || "-") + "\nBrand: " + (fieldVal(f, "brand") || "-") + "\nWebsite: " + (fieldVal(f, "site") || "-") + "\nEmail: " + (fieldVal(f, "email") || "-");
+      var M = T.mail;
+      return M.req + "\n" + M.need + ": " + pick("need") + "\n" + M.budget + ": " + pick("budget") + "\n" + M.time + ": " + pick("time") +
+        "\n" + M.name + ": " + (fieldVal(f, "name") || "-") + "\n" + M.brand + ": " + (fieldVal(f, "brand") || "-") + "\n" + M.site + ": " + (fieldVal(f, "site") || "-") + "\n" + M.contact + ": " + (fieldVal(f, "email") || "-");
     };
     var em = $('[data-send="email"]', wiz), tgl = $('[data-send="telegram"]', wiz);
     next.addEventListener("click", function () {
-      { var t = summary(); if (em) em.href = mailto("Request: " + (fieldVal($("form", wiz), "brand") || "new brand"), t); if (tgl) tgl.dataset.text = t; }
+      { var t = summary(); if (em) em.href = mailto(T.mail.reqSubj + ": " + (fieldVal($("form", wiz), "brand") || T.mail.newBrand), t); if (tgl) tgl.dataset.text = t; }
     });
     if (tgl) tgl.addEventListener("click", function () { copyText(tgl.dataset.text || summary()); });
   }
