@@ -441,6 +441,41 @@
     </div>
   </section>
 
+  <section class="section" id="look" aria-labelledby="look-title">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <span class="label">[WARDROBE]</span>
+        <h2 class="h2" id="look-title">Try the look.</h2>
+        <p>Pick a creator and switch the look. One piece changes at a time, the face stays the same. This is how we dress our cast in your clothes.</p>
+      </div>
+      <div class="ttl-grid" data-ttl>
+        <div class="ttl-stage" role="group" aria-roledescription="carousel" aria-label="Creators in the demo capsule">
+          <div class="ttl-figs">
+            <div class="ttl-fig" data-model="maya" data-name="Maya"><img src="assets/look/maya_0.webp" alt="AI creator Maya in a camel blazer, white tee, brown trousers and loafers, with a cognac crescent bag" width="760" height="1362" decoding="async"></div>
+            <div class="ttl-fig" data-model="vera" data-name="Vera"><img src="assets/look/vera_0.webp" alt="AI creator Vera in a beige trench over a cable-knit sweater, light jeans and white sneakers" width="760" height="1362" decoding="async"></div>
+            <div class="ttl-fig" data-model="leo" data-name="Leo"><img src="assets/look/leo_0.webp" alt="AI creator Leo in a cable-knit sweater, brown trousers and loafers" width="760" height="1362" decoding="async"></div>
+          </div>
+          <div class="ttl-nav">
+            <button class="ttl-arrow" type="button" data-step="-1" aria-label="Previous creator">&larr;</button>
+            <button class="ttl-arrow" type="button" data-step="1" aria-label="Next creator">&rarr;</button>
+          </div>
+        </div>
+        <div class="ttl-panel">
+          <div class="ttl-who"><b>Maya</b><span>Look 01 / 05</span></div>
+          <div class="ttl-looks" role="group" aria-label="Looks of this creator"></div>
+          <h3 class="label ttl-in">In this look</h3>
+          <ul class="ttl-items"></ul>
+          <div class="ttl-cta">
+            <button class="btn btn-primary" type="button" data-open-wizard>Try it with my clothes</button>
+            <button class="ttl-seen" type="button" hidden></button>
+          </div>
+          <p class="ttl-note">AI creators. A demo capsule, no real brands.</p>
+          <p class="ttl-live" aria-live="polite"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="section" id="process" aria-labelledby="process-title">
     <div class="wrap">
       <div class="section-head" data-reveal>
@@ -768,5 +803,6 @@
 </div>
 
 <script src="js/main.js"></script>
+<script src="js/look.js"></script>
 </body>
 </html>
